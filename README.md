@@ -182,6 +182,7 @@ streamlit>=1.36,<2.0
 chromadb>=0.5,<1.0
 beautifulsoup4>=4.12,<5.0
 onnxruntime>=1.18,<2.0
+sentence-transformers
 ```
 
 The Sentence Transformer embedding model used by the application is:
@@ -199,7 +200,7 @@ The embedding model may be downloaded automatically the first time it is used.
 ### 1. Clone the repository
 
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
+git clone https://github.com/kehkasha18/regulens.git
 cd regulens
 ```
 
