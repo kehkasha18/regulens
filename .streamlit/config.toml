@@ -1,0 +1,8 @@
+[server]
+fileWatcherType = "none"
+
+[client]
+showErrorDetails = false
+
+[theme]
+base = "light"
