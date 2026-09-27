@@ -280,23 +280,23 @@ If the browser does not open automatically, Streamlit will display a local URL i
 The application can answer questions such as:
 
 ```text
-What are the obligations under Article 99?
+What responsibilities does an organization have when deploying a high-risk AI system?
 ```
 
 ```text
-What are the obligations of providers under Article 16?
+How should human oversight be handled for high-risk AI systems?
 ```
 
 ```text
-What are the obligations of deployers under Article 26?
+What are the main obligations for providers of high-risk AI systems?
 ```
 
 ```text
-What does the EU AI Act say about prohibited AI practices?
+What information must people receive when they interact with certain AI systems?
 ```
 
 ```text
-What are the transparency obligations under Article 50?
+How does the EU AI Act address fines and penalties for non-compliance?
 ```
 
 ---

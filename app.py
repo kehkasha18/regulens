@@ -234,11 +234,11 @@ with st.sidebar:
     st.subheader("Example questions")
 
     example_questions = [
-        "What are the obligations under Article 99?",
-        "What are the obligations of providers under Article 16?",
-        "What are the obligations of deployers under Article 26?",
-        "What does the EU AI Act say about prohibited AI practices?",
-        "What are the transparency obligations under Article 50?",
+        "What responsibilities does an organization have when deploying a high-risk AI system?",
+        "How should human oversight be handled for high-risk AI systems?",
+        "What are the main obligations for providers of high-risk AI systems?",
+        "What information must people receive when they interact with certain AI systems?",
+        "How does the EU AI Act address fines and penalties for non-compliance?",
     ]
 
     for example in example_questions:
