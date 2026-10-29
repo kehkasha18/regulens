@@ -2,11 +2,11 @@
 
 ## Evidence-Grounded Regulatory Intelligence for the EU AI Act
 
-ReguLens is a Retrieval-Augmented Generation (RAG) application that helps users ask questions about the European Union Artificial Intelligence Act.
+ReguLens is an evidence-grounded regulatory intelligence application that helps users explore the European Union Artificial Intelligence Act (EU AI Act) through semantic retrieval, relevance ranking, and rule-based response construction. The current implementation does not use a large language model (LLM) to generate answers.
 
-The system retrieves relevant provisions from a locally indexed copy of the EU AI Act, evaluates the relevance of the retrieved content, and presents an answer together with the supporting regulatory evidence.
+The system indexes article-level text from a local HTML copy of the EU AI Act, retrieves candidate provisions using Sentence Transformer embeddings and ChromaDB, applies custom relevance processing, and displays selected regulatory evidence alongside a response assembled by predefined Python logic.
 
-ReguLens is designed to prioritize source-grounded responses and reduce unsupported or unrelated answers.
+ReguLens is designed to make relevant source text easier to find and inspect. The response summary is rule-based; users should read the displayed legal excerpts and consult the official text rather than treating the summary as a complete legal interpretation.
 
 ---
 
@@ -22,7 +22,7 @@ Instead of answering from unrestricted general knowledge, the application:
 4. Retrieves relevant regulatory provisions from ChromaDB.
 5. Evaluates the relevance of the retrieved provisions.
 6. Selects applicable evidence.
-7. Generates a grounded answer.
+7. Constructs a short response using predefined Python logic (including a specific rule for Article 99).
 8. Displays the answer with supporting regulatory excerpts.
 
 If a question is unrelated to the EU AI Act, ReguLens rejects it rather than providing a general-purpose answer.
@@ -31,13 +31,13 @@ If a question is unrelated to the EU AI Act, ReguLens rejects it rather than pro
 
 ## Features
 
-- Retrieval-Augmented Generation workflow
+- Evidence-grounded semantic retrieval and response pipeline
 - Natural-language question answering
 - Local semantic search using ChromaDB
 - Sentence-transformer embeddings
 - Article-level indexing of the EU AI Act
 - Relevance-aware evidence selection
-- Grounded answer generation
+- Rule-based response construction using retrieved evidence
 - Supporting evidence excerpts
 - Relevance score display
 - Semantic distance display
@@ -74,13 +74,13 @@ Article chunks and metadata
 Question cleaning and semantic retrieval
           │
           ▼
-Relevance evaluation and evidence selection
+Custom relevance processing and evidence selection
           │
           ▼
 answer_generator.py
           │
           ▼
-Grounded answer and supporting evidence
+Rule-based response summary and supporting evidence
           │
           ▼
        app.py
@@ -104,7 +104,7 @@ regulens/
 │   evaluation, and ChromaDB access.
 │
 ├── answer_generator.py
-│   Generates grounded responses from the retrieved regulatory evidence.
+│   Constructs response summaries using predefined Python logic and retrieved evidence; it does not call an LLM.
 │
 ├── ingest.py
 │   Reads the EU AI Act HTML file, extracts articles, creates metadata, and
@@ -120,6 +120,9 @@ regulens/
 ├── .streamlit/
 │   └── config.toml
 │       Streamlit configuration.
+│
+├── screenshots/
+│   Example application screenshots used in this README.
 │
 └── data/
     ├── eu_ai_act.html
@@ -141,7 +144,7 @@ The local ChromaDB database is generated during ingestion and is excluded from G
 - Sentence Transformers
 - BeautifulSoup
 - ONNX Runtime
-- Retrieval-Augmented Generation
+- Rule-based response construction
 - Semantic embeddings
 - Vector similarity search
 - HTML parsing
@@ -167,7 +170,7 @@ The source document is stored locally at:
 data/eu_ai_act.html
 ```
 
-The application displays the official source URL and document version alongside retrieved evidence.
+The application displays the official source URL and a document-version label alongside retrieved evidence. The version label is set in the ingestion code; the script does not independently verify that the local HTML file matches that version. Check the source file against EUR-Lex before relying on it.
 
 ---
 
@@ -203,8 +206,6 @@ The embedding model may be downloaded automatically the first time it is used.
 git clone https://github.com/kehkasha18/regulens.git
 cd regulens
 ```
-
-Replace `<YOUR_GITHUB_REPOSITORY_URL>` with the URL of the GitHub repository.
 
 ### 2. Create a virtual environment
 
@@ -318,9 +319,9 @@ The sidebar displays:
 
 Users can enter a natural-language question about the EU AI Act.
 
-### Grounded Answer
+### Rule-Based Response Summary
 
-The application displays an answer generated from the retrieved regulatory evidence.
+The application displays a short response constructed by predefined Python logic, alongside the retrieved regulatory evidence. The current implementation does not use an LLM for free-form answer generation.
 
 ### Applicable Evidence
 
@@ -336,6 +337,28 @@ The evidence section displays:
 - Document version
 
 This allows users to inspect the regulatory content supporting the answer.
+
+---
+
+## Screenshots
+
+The screenshots below illustrate example interactions with the current application. They show retrieval and evidence display for selected topics, as well as handling of an out-of-scope question. They are examples of application behaviour, not a formal evaluation of retrieval accuracy.
+
+### Human oversight
+
+![ReguLens retrieving evidence about human oversight](screenshots/human-oversight.png)
+
+### Deployer responsibilities
+
+![ReguLens retrieving evidence about deployer responsibilities](screenshots/deployer-responsibilities.png)
+
+### Penalties
+
+![ReguLens retrieving evidence about penalties](screenshots/penalties.png)
+
+### Out-of-scope question
+
+![ReguLens rejecting an unrelated question](screenshots/out-of-scope-rejection.png)
 
 ---
 
@@ -391,17 +414,14 @@ This prevents the system from behaving like an unrestricted general-purpose chat
 
 ## Grounding Principle
 
-ReguLens prioritizes evidence grounding over unrestricted answer generation.
+ReguLens prioritizes access to retrieved evidence over unrestricted answer generation. The current application:
 
-The application is designed to:
+- Retrieves regulatory provisions that appear relevant to the question.
+- Displays selected evidence excerpts and source metadata.
+- Uses predefined Python logic to construct a short response summary.
+- Returns a scope message for questions classified as unrelated, or when sufficiently relevant evidence is not found.
 
-- Use retrieved regulatory provisions as the basis for answers.
-- Display the evidence supporting the answer.
-- Avoid answering unrelated questions.
-- Communicate when sufficiently relevant evidence is not available.
-- Preserve the connection between the answer and the underlying legal text.
-
-The system does not claim to replace legal research or professional legal advice.
+The response summary is not a comprehensive legal interpretation. Review the cited provisions in the official legal text. The system does not replace legal research or professional legal advice.
 
 ---
 
@@ -427,9 +447,7 @@ Each chunk contains both the article text and metadata describing the source.
 
 ## Current Knowledge Base
 
-The current local knowledge base contains the indexed provisions extracted from the EU AI Act HTML source document.
-
-The Streamlit sidebar displays the number of indexed provisions. In the current working setup, the dashboard displays:
+The local knowledge base contains the provisions extracted by the ingestion script from the HTML file in `data/eu_ai_act.html`. The number of indexed provisions depends on that file and the extraction process. In the previously observed working setup, the dashboard displayed: 
 
 ```text
 Indexed provisions: 113
@@ -471,7 +489,7 @@ Responsible for:
 
 - Receiving the user question
 - Receiving retrieved evidence
-- Generating a grounded response
+- Constructing a response summary using predefined Python logic (not an LLM)
 - Handling scope-related responses
 - Returning the answer and selected evidence
 
@@ -530,7 +548,7 @@ The database can always be recreated from the source HTML file by running:
 python ingest.py
 ```
 
-The source HTML file is retained in the repository so that the knowledge base can be rebuilt.
+The source HTML file is retained in the repository so that the knowledge base can be rebuilt. Because ingestion deletes and recreates the `regulations` collection, run `python ingest.py` when you intend to rebuild the local index.
 
 ---
 
@@ -545,6 +563,7 @@ The current implementation has the following limitations:
 - It does not guarantee complete legal interpretation.
 - Retrieval quality depends on the quality and version of the indexed source document.
 - The document version should be checked against the official EUR-Lex source before making compliance decisions.
+- The response layer is rule-based and does not use an LLM. For most articles, the summary is generic and points users to the retrieved evidence; Article 99 has a specific predefined summary.
 - The application is intended to support regulatory exploration and evidence review, not replace professional legal analysis.
 
 ---
